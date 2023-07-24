@@ -113,40 +113,5 @@ function runOutsideAngular<T>(fn: () => T): T {
 function createMessage(instance: any): string {
   return `
   The ${instance.constructor.name} still has subscriptions that haven't been unsubscribed.
-  This may happen if the class extends another class decorated with @UntilDestroy().
-  The child class implements its own ngOnDestroy() method but doesn't call super.ngOnDestroy().
-  Let's look at the following example:
-  @UntilDestroy()
-  @Directive()
-  export abstract class BaseDirective {}
-  @Component({ template: '' })
-  export class ConcreteComponent extends BaseDirective implements OnDestroy {
-    constructor() {
-      super();
-      someObservable$.pipe(untilDestroyed(this)).subscribe();
-    }
-    ngOnDestroy(): void {
-      // Some logic here...
-    }
-  }
-  The BaseDirective.ngOnDestroy() will not be called since Angular will call ngOnDestroy()
-  on the ConcreteComponent, but not on the BaseDirective.
-  One of the solutions is to declare an empty ngOnDestroy method on the BaseDirective:
-  @UntilDestroy()
-  @Directive()
-  export abstract class BaseDirective {
-    ngOnDestroy(): void {}
-  }
-  @Component({ template: '' })
-  export class ConcreteComponent extends BaseDirective implements OnDestroy {
-    constructor() {
-      super();
-      someObservable$.pipe(untilDestroyed(this)).subscribe();
-    }
-    ngOnDestroy(): void {
-      // Some logic here...
-      super.ngOnDestroy();
-    }
-  }
   `;
 }

@@ -56,7 +56,7 @@ export function untilDestroyed<T>(instance: T, destroyMethodName?: keyof T) {
     }
 
     const destroy$: Subject<void> = (instance as any)[symbol];
-    NG_DEV_MODE && setupSubjectUnsubscribedChecker(instance, destroy$);
+    setupSubjectUnsubscribedChecker(instance, destroy$);
 
     return source.pipe(takeUntil<U>(destroy$));
   };
