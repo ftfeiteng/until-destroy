@@ -7,7 +7,6 @@
   "scripts": {
     "ng": "nx",
     "nx": "nx",
-    "postinstall": "node ./decorate-angular-cli.js && husky install",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors init",
     "release": "cd libs/until-destroy && standard-version --infile ../../CHANGELOG.md --skip.bump --skip.commit --skip.tag",
