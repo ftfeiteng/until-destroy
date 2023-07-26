@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs';
+import { isEmpty, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { setupSubjectUnsubscribedChecker } from './checker';
@@ -8,6 +8,8 @@ import {
   createSubjectOnTheInstance,
   completeSubjectOnTheInstance,
 } from './internals';
+import 'reflect-metadata';
+
 
 // This will be provided through Terser global definitions by Angular CLI. This will
 // help to tree-shake away the code unneeded for production bundles.
@@ -57,6 +59,15 @@ export function untilDestroyed<T>(instance: T, destroyMethodName?: keyof T) {
 
     const destroy$: Subject<void> = (instance as any)[symbol];
     NG_DEV_MODE && setupSubjectUnsubscribedChecker(instance, destroy$);
+
+    const startTime = Date.now();
+    source.pipe(takeUntil<U>(destroy$), isEmpty()).subscribe(empty => {
+      if (empty) {
+        const constructorPrototypeName = Reflect.getMetadata('__className__', (instance as any).constructor.prototype)
+        const endTime = Date.now();
+        console.log(`Source observable is Empty. Constructor: ${constructorPrototypeName ?? (instance as any).constructor.name}. Timespan: ${((endTime - startTime)/1000).toFixed(2)}s`)
+      }
+    });
 
     return source.pipe(takeUntil<U>(destroy$));
   };

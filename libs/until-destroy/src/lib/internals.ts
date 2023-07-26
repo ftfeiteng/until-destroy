@@ -38,6 +38,7 @@ export function markAsDecorated<T>(
 }
 
 export interface UntilDestroyOptions {
+  className?: string;
   blackList?: string[];
   arrayName?: string;
   checkProperties?: boolean;

@@ -12,6 +12,7 @@ import {
   completeSubjectOnTheInstance,
   markAsDecorated,
 } from './internals';
+import 'reflect-metadata';
 
 function unsubscribe(property: unknown): void {
   if (property instanceof Subscription) {
@@ -67,6 +68,10 @@ function decoratePipe<T>(type: PipeType<T>, options: UntilDestroyOptions): void 
 
 export function UntilDestroy(options: UntilDestroyOptions = {}): ClassDecorator {
   return (type: any) => {
+    if (options.className) {
+      Reflect.defineMetadata('__className__', options.className, type.prototype);
+    }
+
     if (isPipe(type)) {
       decoratePipe(type, options);
     } else {
